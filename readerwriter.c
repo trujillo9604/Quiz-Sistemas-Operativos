@@ -21,8 +21,8 @@ puede escribir.
 #include <fcntl.h>
 
 #define MAXPERSONS 10
-#define SEMNAME "/semaforo"
-#define SEMNAME1 "/semaforo1"
+#define SEMNAME "/semaforo122"
+#define SEMNAME1 "/semaforo112"
 
 
 int contador;
@@ -45,8 +45,8 @@ int main() {
 	contador = 0;
 	numreaders = 0;
 	numwriters = 0;
-	s1=sem_open(SEMNAME1, O_CREAT, S_IRUSR | S_IWUSR, 0);
-	s=sem_open(SEMNAME, O_CREAT, S_IRUSR | S_IWUSR, 0);	
+	s1=sem_open(SEMNAME1, O_CREAT, S_IRUSR | S_IWUSR, 1);
+	s=sem_open(SEMNAME, O_CREAT, S_IRUSR | S_IWUSR, 1);	
 	//signal(SIGINT, INThandler);
 	// Inicializo el generador de numeros aleatorios
 	srand(time(NULL));
@@ -102,7 +102,8 @@ void *reading(void* data) {
 	if (contador == 1)
 	{ sem_wait(s);
 	}
-
+    sem_post(s1);
+      
 	printf("El lector %d estara leyendo por %li ms. Hay %d lectores en el salon\n",id,_tiempo,contador);
         sem_post(s1);
 
@@ -112,8 +113,9 @@ void *reading(void* data) {
 		if(contador == 0) {
 		sem_post(s);
 }
-	printf("El lector %d termina de leer, ahora hay %d lectores leyendo\n",id, contador);
 	sem_post(s1);
+	printf("El lector %d termina de leer, ahora hay %d lectores leyendo\n",id, contador);
+	
 	return NULL;
 }
 
